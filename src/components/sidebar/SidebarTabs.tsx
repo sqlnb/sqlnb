@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Tabs, Tab, Icon } from '@blueprintjs/core';
+import { Button, ButtonGroup, Divider } from '@blueprintjs/core';
 
 enum TabIcon {
   FILE_BROWSER = "document",
@@ -42,25 +42,51 @@ export default function SidebarTabs({ }: ISidebarTabsProps) {
     <div 
       className="app-sidebar-tabs"
       style={{
+        height: "100%",
+        backgroundColor: "#f5f5f5",
       }}
     >
-      <Tabs 
-        id="app-sidebar-tabs-container" 
-        onChange={id => setSelectedTab(id as string)} 
-        selectedTabId={selectedTab}
+      <ButtonGroup
         vertical
+        minimal
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
       >
-        {tabs.map((tab, i) => (
-          <Tab
-            key={i}
-            id={tab.id}
-            // title={tab.title}
-            title={<Icon icon={tab.icon} />}
+        {tabs.map(tab => (
+          <Button
+            key={tab.id}
+            icon={tab.icon}
+            active={selectedTab === tab.id}
+            onClick={() => setSelectedTab(tab.id)}
+            large
+            style={{
+              width: "100%",
+            }}
           />
         ))}
-        <Tabs.Expander />
-        <Tab id="bb" disabled title="Backbone" />
-      </Tabs>
+        <div
+          style={{
+            flexGrow: 1,
+          }}
+        />
+        <Divider />
+        <Button 
+          key="settings"
+          icon={TabIcon.SETTINGS}
+          active={selectedTab === "settings"}
+          onClick={() => setSelectedTab("settings")}
+          large
+          style={{
+            width: "100%",
+            userSelect: "none",
+          }}
+        />
+        <div style={{ 
+          height: "10px",
+        }}/>
+      </ButtonGroup>
     </div>
   );
 }

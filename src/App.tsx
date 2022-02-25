@@ -46,12 +46,13 @@ export default function App() {
         </div>
         <div
           style={{
+            right: 0,
+            marginLeft: "auto",
             width: "calc(100% - 50px)",
             height: "100%",
           }}
         >
           <Split
-            // direction="horizontal"
             sizes={[30, 70]}
             className="split"
             style={{
