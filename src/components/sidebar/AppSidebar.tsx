@@ -20,10 +20,9 @@ export default function AppSidebar({ }: IAppSidebarProps) {
       className="app-sidebar"
       style={{
         // overflow: "auto",
-        // overflowX: "hidden",
+        overflowX: "hidden",
       }}
     >
-      {/* <SidebarTabs /> */}
       <SidebarFileBrowser />
     </div>
   );

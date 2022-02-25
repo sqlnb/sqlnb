@@ -24,7 +24,7 @@ export default function App() {
       className="App"
       style={{
         width: "100%",
-        height: "calc(100% - 50px)",
+        height: "100%",
         margin: 0,
       }}
     >
@@ -32,7 +32,7 @@ export default function App() {
       <div
         style={{
           width: "100%",
-          height: "100%",
+          height: "calc(100% - 50px)",
         }}
       >
         <div
