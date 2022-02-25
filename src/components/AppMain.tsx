@@ -101,6 +101,7 @@ export function TabButton({ label, isSelected, onSelect, onDelete }: ITabButtonP
           key="close"
           icon="small-cross"
           onClick={() => undefined}
+          intent="danger"
         />
       </ButtonGroup>
     </div>
