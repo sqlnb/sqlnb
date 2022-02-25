@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Split from 'react-split';
 import AppNav from './components/AppNav';
-import AppSidebar from './components/AppSidebar';
+import AppSidebar from './components/sidebar/AppSidebar';
 import AppMain from './components/AppMain';
+import SidebarTabs from './components/sidebar/SidebarTabs';
 
 // import { useHotkeys } from 'react-hotkeys-hook';
 
@@ -28,19 +29,42 @@ export default function App() {
       }}
     >
       <AppNav />
-      <Split
-        // direction="horizontal"
-        sizes={[30, 70]}
-        className="split"
+      <div
         style={{
           width: "100%",
           height: "100%",
-          margin: 0,
         }}
       >
-        <AppSidebar />
-        <AppMain />
-      </Split>
+        <div
+          style={{
+            float: "left",
+            width: "50px",
+            height: "100%",
+          }}
+        >
+          <SidebarTabs />
+        </div>
+        <div
+          style={{
+            width: "calc(100% - 50px)",
+            height: "100%",
+          }}
+        >
+          <Split
+            // direction="horizontal"
+            sizes={[30, 70]}
+            className="split"
+            style={{
+              width: "100%",
+              height: "100%",
+              margin: 0,
+            }}
+          >
+          <AppSidebar />
+          <AppMain />
+        </Split>
+        </div>
+      </div>
     </div>
   );
 }
