@@ -91,13 +91,15 @@ const demoContents = [
   },
 ];
 
+/**
+ * FileTreeIcon is an enum that stores icon names
+ * used in the FileTree component.
+ */
 enum FileTreeIcon {
   DOCUMENT      = 'document',
   FOLDER_CLOSED = 'folder-close',
   FOLDER_OPEN   = 'folder-open',
-  NOTEBOOK       = "book",
-  
-  // PAPERCLIP     = "paperclip",
+  NOTEBOOK      = "book",
 }
 
 export interface File {
@@ -119,6 +121,11 @@ interface FileOrFolder {
   nodeData?: any;
 }
 
+// TODO – Add a search bar.
+// TODO – Allow for navigation to a specific file. (Lazy render FS tree?)
+/**
+ * FileTree displays a file system tree in the side panel.
+ */
 function FileTree({ contents }: { contents: (File | Folder)[] }) {
   const [selected, setSelected] = useState("");
   const [_expanded, _setExpanded] = useState<string[]>([]);
@@ -183,7 +190,6 @@ export interface IAppSidebarProps {
  * The app's sidebar.
  */
 export default function AppSidebar({ contents }: IAppSidebarProps) {
-
   return (
     <div 
       className="app-sidebar"
