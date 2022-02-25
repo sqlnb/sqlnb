@@ -1,20 +1,84 @@
 import React from 'react';
 
-import { Button, ButtonGroup, OverflowList } from "@blueprintjs/core";
-import { Classes, Popover2 } from "@blueprintjs/popover2";
+import { Button, ButtonGroup, OverflowList, Menu, MenuItem, MenuDivider, Classes } from "@blueprintjs/core";
+import { Popover2 } from "@blueprintjs/popover2";
 
 
 /**
- * ITabButton - Properties for the AppMain component.
+ * IMainTabOverflowDropdownProps - Properties for the MainTabOverflowDropdown component.
  */
-export interface ITabButton {
+export interface IMainTabOverflowDropdownProps {
+  items: {
+    label: string;
+    isSelected: boolean;
+    onSelect: () => void;
+    onDelete: () => void;
+  }[];
+}
+
+export function MainTabOverflowDropdown({ items }: IMainTabOverflowDropdownProps) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const hasSelectedItem = items.some(item => item.isSelected);
+  return (
+    <div className="app-body-overflow-tab-menu">
+      <Popover2
+        minimal
+        placement="bottom-start"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onOpened={() => setIsOpen(true)}
+        content={(
+          <Menu 
+            className={Classes.ELEVATION_1}
+          >
+            <MenuDivider title="More Tabs"/>
+
+            {items.map((item, i) => (
+              <MenuItem
+                icon="book"
+                active={item.isSelected}
+                key={i}
+                text={item.label}
+                onClick={item.onSelect}
+                labelElement={(
+                  <Button 
+                    icon="small-cross" 
+                    minimal
+                    small
+                    onClick={item.onDelete}
+                    intent="danger"
+                  />
+                )}
+              />
+            ))}
+          </Menu>
+        )}
+      >
+        <Button
+            minimal
+            icon="more"
+            style={{
+              backgroundColor: hasSelectedItem || isOpen ? "white" : "#f5f5f5",
+            }}
+            onClick={() => setIsOpen(!isOpen)}
+          />
+      </Popover2>
+    </div>
+  )
+}
+
+
+/**
+ * ITabButtonProps - Properties for the AppMain component.
+ */
+export interface ITabButtonProps {
   label: string;
   isSelected: boolean;
   onSelect: () => void;
   onDelete: () => void;
 }
 
-export function TabButton({ label, isSelected, onSelect, onDelete }: ITabButton) {
+export function TabButton({ label, isSelected, onSelect, onDelete }: ITabButtonProps) {
   return (
     <div
       className="app-body-tab-button"
@@ -51,9 +115,17 @@ export interface IAppMainProps {
 
 /**
  * AppMain - The body of the notebook.
+ * 
+ * TODOs:
+ * - Add a "new tab" button. (Possibly in a context menu?)
+ * – Add "delete tab" functionality.
+ * – If selected tab is overflowed, it won't be shown.
+ *   ├- If an overflowed tab is selected, should the list be re-sorted?
+ *   └- Ideally, the overflow would shift (possibly even with scroll). Can it be controlled?
  */
 export default function AppMain({}: IAppMainProps) {
   const [selectedTab, setSelectedTab] = React.useState(20);
+  const tabItems = new Array(20).fill(0).map((_, i) => i+1);
   return (
     <div 
       className="app-main"
@@ -77,48 +149,27 @@ export default function AppMain({}: IAppMainProps) {
         >
           <OverflowList
             observeParents
-            items={new Array(20).fill(0).map((_, i) => i+1)}
-            // TODO: Make this a dropdown...
+            items={tabItems}
             overflowRenderer={items => (
-              <Popover2
-                content={(
-                  <div />
-                )}
-                renderTarget={(isOpen) => (
-                  <Button
-                    minimal
-                    icon="more"
-                    style={{
-                      backgroundColor: isOpen ? "white" : "#f5f5f5",
-                    }}
-                  />
-                )}
+              <MainTabOverflowDropdown
+                items={items.map(i => ({
+                  label: `Tab ${i}`,
+                  isSelected: i === selectedTab,
+                  onSelect: () => setSelectedTab(i),
+                  onDelete: () => undefined,
+                }))}
               />
             )}
             visibleItemRenderer={i => (
-              <ButtonGroup 
-                key={`${i}`} 
-                minimal
-                style={{
-                  marginRight: "5px",
-                  backgroundColor: i === selectedTab ? "white" : "#f5f5f5",
+              <TabButton
+                key={i}
+                label={`Tab ${i}`}
+                isSelected={i === selectedTab}
+                onSelect={ () => setSelectedTab(i)}
+                onDelete={ () => {
+                  // TODO: Add delete tab functionality...
                 }}
-              >
-                {/* Select the tab... */}
-                <Button 
-                  key={`${i}-button`}
-                  text={`Tab ${i}`}
-                  // active={selectedTab === i}
-                  onClick={() => setSelectedTab(i)}
-                />
-                {/* Close the tab... */}
-                <Button 
-                  key={`${i}-close`}
-                  text="x"
-                  // active={selectedTab === i}
-                  onClick={() => undefined}
-                />
-              </ButtonGroup>
+              />
             )}
           />
         </ButtonGroup>

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import './App.css';
+
 import Split from 'react-split';
 import AppNav from './components/AppNav';
 import AppSidebar from './components/sidebar/AppSidebar';
@@ -6,8 +8,6 @@ import AppMain from './components/AppMain';
 import SidebarTabs from './components/sidebar/SidebarTabs';
 
 // import { useHotkeys } from 'react-hotkeys-hook';
-
-import './App.css';
 
 
 export default function App() {

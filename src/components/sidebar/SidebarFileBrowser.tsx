@@ -95,9 +95,9 @@ enum FileTreeIcon {
   DOCUMENT      = 'document',
   FOLDER_CLOSED = 'folder-close',
   FOLDER_OPEN   = 'folder-open',
+  NOTEBOOK       = "book",
   
-  BOOK          = 'book',
-  PAPERCLIP     = "paperclip",
+  // PAPERCLIP     = "paperclip",
 }
 
 export interface File {
@@ -147,8 +147,11 @@ function FileTree({ contents }: { contents: (File | Folder)[] }) {
           isExpanded(id) ? 
             FileTreeIcon.FOLDER_OPEN : 
             FileTreeIcon.FOLDER_CLOSED
-        ) : 
-        FileTreeIcon.DOCUMENT
+        ) : (
+          f.name.toLowerCase().endsWith(".dbnb") ?
+            FileTreeIcon.NOTEBOOK :
+            FileTreeIcon.DOCUMENT
+        )
       ),
       isSelected: isSelected,
       isExpanded: isFolder ? isExpanded(id) : undefined,
