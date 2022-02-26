@@ -5,9 +5,6 @@ import CellEditor from './CellEditor';
  * ICellProps - The props for the Cell component.
  */
 export interface ICellProps {
-  /**The index of the cell */
-  // index: number;
-
   /** The cell-execution-order index of the cell */
   execIndex?: number;
 
@@ -28,13 +25,16 @@ export interface ICellProps {
 
   /** A function to run when the cell is selected */
   onSelect?: () => void;
+
+  /** A function to run when focus changes to/from the editor */
+  setEditorFocus?: (editorFocus: boolean) => void;
 }
 
 
 /**
  * Cell is a single SQL code cell in a notebook body.
  */
-export default function Cell({execIndex, code, selected, onChange, onSelect}: ICellProps) {
+export default function Cell({execIndex, code, selected, onChange, onSelect, setEditorFocus}: ICellProps) {
   return (
     <div 
       className="data-cell"
@@ -74,6 +74,7 @@ export default function Cell({execIndex, code, selected, onChange, onSelect}: IC
           <CellEditor
             value={code}
             setValue={onChange}
+            setEditorFocus={setEditorFocus}
           />
         </div>
       </div>

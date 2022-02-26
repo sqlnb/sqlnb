@@ -88,7 +88,7 @@ export function TabButton({ label, isSelected, onSelect, onDelete }: ITabButtonP
       <ButtonGroup 
         minimal
         style={{
-          marginRight: "5px",
+          marginRight: "6px",
           backgroundColor: isSelected ? "white" : "#f5f5f5",
         }}
       >
@@ -102,8 +102,7 @@ export function TabButton({ label, isSelected, onSelect, onDelete }: ITabButtonP
         <Button 
           key="close"
           icon="small-cross"
-          onClick={() => undefined}
-          intent="danger"
+          onClick={onDelete}
         />
       </ButtonGroup>
     </div>
@@ -133,7 +132,6 @@ export default function AppMain({}: IAppMainProps) {
     <div 
       className="app-main"
       style={{
-        overflow: "hidden",
         width: "calc(100% - 35px)",
       }}
     >
@@ -143,6 +141,7 @@ export default function AppMain({}: IAppMainProps) {
           width: "100%",
           height: "30px",
           backgroundColor: "#f5f5f5",
+          // overflow: "auto",
         }}
       >
         <ButtonGroup

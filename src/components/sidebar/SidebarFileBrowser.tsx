@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { Tree, TreeNodeInfo } from '@blueprintjs/core';
 import CustomScroll from 'react-custom-scroll';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 
 const demoContents = [
@@ -194,15 +195,23 @@ export default function AppSidebar({ contents }: IAppSidebarProps) {
     <div 
       className="app-sidebar"
       style={{
-        overflow: "auto",
-        overflowX: "hidden",
+        width: "100%",
+        height: "100%",
       }}
     >
-      <CustomScroll allowOuterScroll={true}>
-        <p>Sidebar...</p>
-        <FileTree 
-          contents={contents || demoContents} />
-      </CustomScroll>
+      <Scrollbars
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <div>
+          <p>Sidebar...</p>
+          <FileTree 
+            contents={contents || demoContents} 
+          />
+        </div>
+      </Scrollbars>
     </div>
   );
 }
