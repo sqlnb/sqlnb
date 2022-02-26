@@ -3,6 +3,8 @@ import React from 'react';
 import { Button, ButtonGroup, OverflowList, Menu, MenuItem, MenuDivider, Classes } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 
+import Notebook from './notebook/Notebook';
+
 
 /**
  * IMainTabOverflowDropdownProps - Properties for the MainTabOverflowDropdown component.
@@ -183,7 +185,7 @@ export default function AppMain({}: IAppMainProps) {
           height: "calc(100% - 35px)",
         }}
       >
-        <h1>This tab is: Tab-{selectedTab}</h1>
+        <Notebook />
       </div>
     </div>
   );
