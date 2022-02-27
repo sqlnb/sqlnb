@@ -14,6 +14,7 @@ export interface ICellStackProps {
     onChange: (code: string) => void;
     onRun: () => void;
     onSelect?: () => void;
+    setEditorFocus?: (editorFocus: boolean) => void;
   }[];
 }
 
@@ -37,6 +38,7 @@ export default function CellStack({ cells }: ICellStackProps) {
           onChange={cell.onChange}
           onRun={cell.onRun}
           onSelect={cell.onSelect}
+          setEditorFocus={cell.setEditorFocus}
         />
       ))}
     </div>

@@ -35,7 +35,6 @@ export default function CellEditor({ value, setValue, setEditorFocus }: ICellEdi
         onChange={setValue}
         onFocus={() => setEditorFocus && setEditorFocus(true)}
         onBlur={() => setEditorFocus && setEditorFocus(false)}
-
       />
     </div>
   );

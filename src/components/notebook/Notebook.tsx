@@ -4,11 +4,13 @@ import CustomScroll from 'react-custom-scroll';
 import { Scrollbars } from 'react-custom-scrollbars';
 
 import CellStack from './cell/CellStack';
-import NotebookNav from './NotebookNav';
+import NotebookNav, { DBConnStatus } from './NotebookNav';
 
 import { INotebookData, INbCellData } from "./nbData";
 import { demoNotebook } from './demoNbData';
 
+
+const clone = (obj: any) => JSON.parse(JSON.stringify(obj));
 
 /**
  * 
@@ -37,7 +39,18 @@ export default function Notebook({}: INotebookProps) {
   // Store the current selected cell (if any) and whether or 
   // not the editor has focus or the outer cell.
   const [selected, setSelected] = useState<number | null>(0);
+
+  // TODO - This should be set back to false when a new cell is selected.
   const [editorHasFocus, setEditorHasFocus] = useState<boolean>(false);
+
+  
+  const [connStatus, setConnStatus] = useState<DBConnStatus>(DBConnStatus.CONNECTED);
+
+
+  const getSelectedCell = () => selected !== null ? nbData.cells[selected] : null;
+  const insertCellAfter = (index: number, cell: INbCellData) => {
+
+  }
 
   return (
     <div 
@@ -50,7 +63,59 @@ export default function Notebook({}: INotebookProps) {
         setSelected(null);
       }}
     >
-      <NotebookNav />
+      <NotebookNav 
+        onSave={() => { 
+          console.log("Saving...");
+        }}
+
+        onDownload={() => {
+          console.log("Downloading...");
+        }}
+
+        onInsertCellBelow={() => {
+
+        }}
+
+        onMoveCellUp={() => {
+
+        }}
+
+        onMoveCellDown={() => {
+
+        }}
+
+        onDuplicateCell={() => {
+
+        }}
+
+        onDeleteCell={() => {
+
+        }}
+
+        onRunCell={() => {
+
+        }}
+
+        onInterrupt={() => {
+
+        }}
+
+        onRunAllCells={() => {
+
+        }}
+
+        onClearAllOutputs={() => {
+
+        }}
+
+        onResetDBConnection={() => {
+
+        }}
+
+        dbConnStatus={connStatus}
+      />
+
+
       <Scrollbars
         style={{
           width: "100%",
@@ -62,9 +127,12 @@ export default function Notebook({}: INotebookProps) {
             execIndex: cell.execIndex,
             code: cell.source,
             selected: selected === i,
+            
             onSelect: () => {
+              console.log("Selected cell", i);
               setSelected(i);
             },
+
             onChange: (code: string) => setCells([
               ...nbData.cells.slice(0, i), 
               { 
@@ -73,6 +141,7 @@ export default function Notebook({}: INotebookProps) {
               },
               ...nbData.cells.slice(i + 1),
             ]),
+
             onRun: () => { // TODO – Add run function...
               setCells([
                 ...nbData.cells.slice(0, i), 
@@ -83,6 +152,10 @@ export default function Notebook({}: INotebookProps) {
                 ...nbData.cells.slice(i + 1),
               ]);
               setNextExecIndex(nextExecIndex+1);
+            },
+
+            setEditorFocus: (focus: boolean) => {
+              console.log("Set editor focus", i, "=", focus);
             },
           }))}
         />

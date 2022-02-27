@@ -234,6 +234,7 @@ export default function NotebookNav({
             case NavComponentType.STATUS_ICON:
               return (
                 <div
+                key={i}
                   style={{
                     height: "30px",
                     padding: "5px",
