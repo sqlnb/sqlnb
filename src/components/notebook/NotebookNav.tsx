@@ -1,102 +1,206 @@
-import React, { useState } from 'react';
+import React, { } from 'react';
 import {
   Button,
   ButtonGroup,
-  Menu,
-  MenuItem,
   Tag,
   IconName,
   Divider,
+  Icon, 
+  IconSize,
+  Intent,
 } from '@blueprintjs/core';
 import { Popover2, Tooltip2, Classes } from "@blueprintjs/popover2";
+
+/**
+ * DBConnStatus - Status of a database connection.
+ */
+export enum DBConnStatus {
+  NOT_CONNECTED = "Not Connected",
+  CONNECTED = "Connected",
+  RUNNING = "Running",
+  ERROR = "Error",
+  INTERRUPTED = "Interrupted",
+}
+
+function getIntentFromStatus(s: DBConnStatus): (Intent | undefined) {
+  switch (s) {
+    case DBConnStatus.NOT_CONNECTED:
+      return undefined;
+    case DBConnStatus.CONNECTED:
+      return "primary";
+    case DBConnStatus.RUNNING:
+      return "success";
+    case DBConnStatus.ERROR:
+      return "danger";
+    case DBConnStatus.INTERRUPTED:
+      return "warning";
+    default:
+      return undefined;
+  }
+}
 
 
 /**
  * INotebookNavProps - Properties for the NotebookNav component.
  */
 export interface INotebookNavProps {
+  onSave?: () => void;
+  onDownload?: () => void;
+
+  onInsertCellBelow?: () => void;
+  onMoveCellUp?: () => void;
+  onMoveCellDown?: () => void;
+  onDuplicateCell?: () => void;
+  onDeleteCell?: () => void;
+
+  onRunCell?: () => void;
+  onInterrupt?: () => void;
+  onRunAllCells?: () => void;
+  onClearAllOutputs?: () => void;
+  onResetDBConnection?: () => void;
+
+  dbConnStatus?: DBConnStatus;
 }
 
+enum NavComponentType {
+  BUTTON = 0,
+  DIVIDER,
+  STATUS_ICON,
+}
 
-interface INavButton {
+enum DBStatusIcon {
+  DB = "database",
+  CIRCLE = "full-circle",
+}
+
+interface INavComponent {
+  type: NavComponentType;
+}
+
+interface INavButton extends INavComponent {
+  type: NavComponentType.BUTTON;
   icon: IconName;
   tip: string;
   onClick: () => void;
 }
 
-interface INavDivider {
-  divider: boolean;
+interface INavDivider extends INavComponent {
+  type: NavComponentType.DIVIDER;
 }
 
+/**
+ * INavStatus - A status icon for the nav bar.
+ */
+interface INavStatus extends INavComponent {
+  type: NavComponentType.STATUS_ICON;
+  status: DBConnStatus;
+  icon: DBStatusIcon;
+}
 
 /**
  * NotebookNav is the navbar for the notebook.
  */
-export default function NotebookNav({}: INotebookNavProps) {
-  const buttons = [
+export default function NotebookNav({
+  onSave,
+  onDownload,
+  onInsertCellBelow,
+  onMoveCellUp,
+  onMoveCellDown,
+  onDuplicateCell,
+  onDeleteCell,
+  onRunCell,
+  onInterrupt,
+  onRunAllCells,
+  onClearAllOutputs,
+  onResetDBConnection,
+  dbConnStatus,
+}: INotebookNavProps) {
+  const navComponents = [
     {
+      type: NavComponentType.BUTTON,
       icon: "floppy-disk",
       tip: "Save Notebook",
-      onClick: () => {},
+      onClick: onSave,
     },
     {
+      type: NavComponentType.BUTTON,
       icon: "download",
       tip: "Download Notebook",
-      onClick: () => {},
+      onClick: onDownload,
     },
-    {divider: true},
+    {type: NavComponentType.DIVIDER},
     {
+      type: NavComponentType.BUTTON,
       icon: "insert",
       tip: "Insert Cell Below",
-      onClick: () => {},
+      onClick: onInsertCellBelow,
     },
     {
+      type: NavComponentType.BUTTON,
       icon: "arrow-up",
       tip: "Move Cell Up",
-      onClick: () => {},
+      onClick: onMoveCellUp,
     },
     {
+      type: NavComponentType.BUTTON,
       icon: "arrow-down",
       tip: "Move Cell Down",
-      onClick: () => {},
+      onClick: onMoveCellDown,
     },
     {
+      type: NavComponentType.BUTTON,
       icon: "duplicate",
       tip: "Duplicate the Current Cell",
-      onClick: () => {},
+      onClick: onDuplicateCell,
     },
     {
+      type: NavComponentType.BUTTON,
       icon: "trash",
       tip: "Delete Current Cell",
-      onClick: () => {},
+      onClick: onDeleteCell,
     },
-    {divider: true},
+    {type: NavComponentType.DIVIDER},
     {
+      type: NavComponentType.BUTTON,
       icon: "play",
       tip: "Run Current Cell",
-      onClick: () => {},
+      onClick: onRunCell,
     },
     {
+      type: NavComponentType.BUTTON,
       icon: "stop",
       tip: "Interrupt Execution",
-      onClick: () => {},
+      onClick: onInterrupt,
     },
     {
+      type: NavComponentType.BUTTON,
       icon: "fast-forward",
       tip: "Run All Cells",
-      onClick: () => {},
+      onClick: onRunAllCells,
     },
     {
+      type: NavComponentType.BUTTON,
       icon: "eraser",
       tip: "Clear All Cells",
-      onClick: () => {},
+      onClick: onClearAllOutputs,
     },
     {
+      type: NavComponentType.BUTTON,
       icon: "reset",
       tip: "Reset DB Connection",
-      onClick: () => {},
+      onClick: onResetDBConnection,
     },
-  ] as (INavButton | INavDivider)[];
+    {type: NavComponentType.DIVIDER},
+    {
+      type: NavComponentType.STATUS_ICON,
+      icon: DBStatusIcon.CIRCLE,
+      status: dbConnStatus,
+    },
+  ] as (
+    INavButton  | 
+    INavDivider | 
+    INavStatus
+  )[];
   return (
     <div
       className="nb-nav-container"
@@ -111,33 +215,48 @@ export default function NotebookNav({}: INotebookNavProps) {
           marginLeft: "20px",
         }}
       >
-        {buttons.map((button, i) => (
-          "divider" in button ? (
-            <Divider key={i} />
-          ) : (
-            <Tooltip2 
-              key={i}
-              className={Classes.TOOLTIP2_INDICATOR} 
-              content={<Tag>{button.tip}</Tag>}
-            >
-              <Button 
-                icon={button.icon as IconName} 
-                onClick={button.onClick}
-              />
-            </Tooltip2>
-          )
-        ))}
+        {navComponents.map((navc, i) => {
+          switch (navc.type) {
+            case NavComponentType.BUTTON:
+              return (
+                <Tooltip2 
+                  key={i}
+                  className={Classes.TOOLTIP2_INDICATOR} 
+                  content={<Tag>{navc.tip}</Tag>}
+                >
+                  <Button 
+                    icon={navc.icon as IconName} 
+                    onClick={navc.onClick}
+                  />
+                </Tooltip2>
+              );
+
+            case NavComponentType.STATUS_ICON:
+              return (
+                <div
+                  style={{
+                    height: "30px",
+                    padding: "5px",
+                    paddingTop: "7px",
+                    margin: "5px auto",
+                  }}
+                >
+                  <Icon icon={navc.icon} intent={getIntentFromStatus(navc.status)} />
+                  <span
+                    style={{
+                      marginLeft: "6px",
+                    }}
+                  >
+                    Status: {navc.status}
+                  </span>
+                </div>
+              );
+
+            case NavComponentType.DIVIDER:
+              return <Divider key={i} />;
+            
+          }})}
       </ButtonGroup>
-      <div 
-        className="nav-gradient"
-        style={{
-          width: "100%",
-          height: "15px",
-          position: "fixed",
-          background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0))",
-          zIndex: 1,
-        }}
-      />
     </div>
   );
 }
