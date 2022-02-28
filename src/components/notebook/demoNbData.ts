@@ -19,15 +19,18 @@ export const demoNotebook = {
             source: "SELECT 1 + 2 res;",
         },
         {
+            execIndex: 1,
             type: NbCellType.CODE,
             source: "SELECT users.name\nFROM users JOIN orders\n\tON orders.uid = users.id\nWHERE orders.open;",
         },
         {
+            execIndex: 2,
             type: NbCellType.CODE,
             source: "SELECT name, id\nFROM users;",
         },
 
         {
+            execIndex: 3,
             type: NbCellType.CODE,
             source: "SELECT 1 + 2 res;",
         },

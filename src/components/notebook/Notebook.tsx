@@ -6,11 +6,12 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import CellStack from './cell/CellStack';
 import NotebookNav, { DBConnStatus } from './NotebookNav';
 
-import { INotebookData, INbCellData } from "./nbData";
+import { INotebookData, INbCellData, NbCellType } from "./nbData";
 import { demoNotebook } from './demoNbData';
 
 
-const clone = (obj: any) => JSON.parse(JSON.stringify(obj));
+const clone = <T, >(obj: T): T => JSON.parse(JSON.stringify(obj));
+
 
 /**
  * 
@@ -47,9 +48,21 @@ export default function Notebook({}: INotebookProps) {
   const [connStatus, setConnStatus] = useState<DBConnStatus>(DBConnStatus.CONNECTED);
 
 
-  const getSelectedCell = () => selected !== null ? nbData.cells[selected] : null;
-  const insertCellAfter = (index: number, cell: INbCellData) => {
+  const getSelectedCell = () => selected !== null ? clone(nbData.cells[selected]) : null;
 
+  const insertCellAfter = (index: number, cell: INbCellData) => {
+    const updatedData = {
+      ...nbData,
+      cells: [
+        ...nbData.cells.slice(0, index + 1),
+        cell,
+        ...nbData.cells.slice(index + 1),
+      ],
+    };
+    console.log(updatedData);
+
+    // Insert the new cell
+    setNbData(updatedData);
   }
 
   return (
@@ -65,35 +78,103 @@ export default function Notebook({}: INotebookProps) {
     >
       <NotebookNav 
         onSave={() => { 
-          console.log("Saving...");
+          console.log("Saving..."); // TODO - Add saving functionality.
         }}
 
         onDownload={() => {
-          console.log("Downloading...");
+          console.log("Downloading..."); // TODO - Add download functionality.
         }}
 
         onInsertCellBelow={() => {
+          console.log("Inserting cell...")
+          const i = selected !== null ? selected : nbData.cells.length - 1;
 
+          console.log("Selected cell:", i);
+
+          insertCellAfter(i, {
+            type: NbCellType.CODE,
+            source: "SELECT \"new cell\";",
+          });
+
+          console.log("Setting selected cell to:", i + 1);
+
+          setSelected(i + 1);
+
+          console.log("Done with update")
+
+          console.log(nbData.cells);
         }}
 
         onMoveCellUp={() => {
+          if (
+            selected === null || 
+            selected === 0 ||
+            nbData.cells.length <= 1
+          ) return;
 
+          const cells = clone(nbData.cells);
+          setCells([
+            ...cells.slice(0, selected - 1),
+            cells[selected],
+            cells[selected - 1],
+            ...cells.slice(selected + 1),
+          ]);
+          setSelected(selected - 1);
         }}
 
         onMoveCellDown={() => {
-
+          if (
+            selected === null || 
+            nbData.cells.length <= 1 ||
+            selected >= nbData.cells.length - 1
+          ) return;
+          const cells = clone(nbData.cells);
+          setCells([
+            ...cells.slice(0, selected - 1),
+            cells[selected - 1],
+            cells[selected],
+            ...cells.slice(selected + 1),
+          ]);
+          setSelected(selected + 1);
         }}
 
         onDuplicateCell={() => {
+          if (selected === null) return;
 
+          const c = getSelectedCell();
+          insertCellAfter(
+            selected, 
+            {
+            ...(c !== null ? clone(c) : {
+              type: NbCellType.CODE,
+              source: "",
+            }),
+            execIndex: undefined,
+          },
+          );
+          setSelected(selected + 1);
         }}
 
         onDeleteCell={() => {
+          if (selected === null) return;
 
+          if (nbData.cells.length <= 1)
+            return setCells([{
+              type: NbCellType.CODE,
+              source: "",
+            }]);
+
+          const cells = clone(nbData.cells);
+          setCells([
+            ...cells.slice(0, selected),
+            ...cells.slice(selected + 1),
+          ]);
+          setSelected(Math.max(0, selected - 1));
         }}
 
         onRunCell={() => {
-
+          if (selected === null) return;
+          
         }}
 
         onInterrupt={() => {
@@ -151,7 +232,7 @@ export default function Notebook({}: INotebookProps) {
                 },
                 ...nbData.cells.slice(i + 1),
               ]);
-              setNextExecIndex(nextExecIndex+1);
+              // setNextExecIndex(nextExecIndex+1);
             },
 
             setEditorFocus: (focus: boolean) => {
