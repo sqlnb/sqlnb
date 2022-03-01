@@ -222,7 +222,7 @@ export default function NotebookNav({
                 <Tooltip2 
                   key={i}
                   className={Classes.TOOLTIP2_INDICATOR} 
-                  content={<Tag>{navc.tip}</Tag>}
+                  content={navc.tip}
                 >
                   <Button 
                     icon={navc.icon as IconName} 

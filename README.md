@@ -32,6 +32,11 @@ Some general notes on features to implement, etc.
   - Tables
   - Charts (vega, chart.js, etc.?)
 - Wrap notebook / cell functionality in a class / interface?
+- Who calculates the 
+
+**Notebook Nav:**
+- Connection status is a placeholder for now
+- Should any of the buttons grey-out
 
 **Bugs:**
 - There's a top-level

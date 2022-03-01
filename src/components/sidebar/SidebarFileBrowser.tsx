@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 
-import { Tree, TreeNodeInfo } from '@blueprintjs/core';
-import CustomScroll from 'react-custom-scroll';
+import { 
+  Tree, 
+  TreeNodeInfo,
+  Button,
+  ButtonGroup,
+  Divider,
+} from '@blueprintjs/core';
+import { Classes, Tooltip2 } from "@blueprintjs/popover2";
+
 import { Scrollbars } from 'react-custom-scrollbars';
 
 
@@ -103,7 +110,7 @@ enum FileTreeIcon {
   NOTEBOOK      = "book",
 }
 
-export interface File {
+export interface File { 
   name: string;
 }
 
@@ -122,12 +129,79 @@ interface FileOrFolder {
   nodeData?: any;
 }
 
-// TODO – Add a search bar.
-// TODO – Allow for navigation to a specific file. (Lazy render FS tree?)
+export interface IFileTreeButtonsProps {
+  onNewFile?: () => void; // TODO – Create a new-file launcher popup component
+  onNewFolder?: () => void;
+  onDelete?: () => void;
+  onRefresh?: () => void;
+  onChangeDirectory?: () => void;
+}
+
+export function FileTreeButtons({
+  onNewFile,
+  onNewFolder,
+  onDelete,
+  onRefresh,
+  onChangeDirectory,
+}: IFileTreeButtonsProps) {
+  return (
+    <div 
+      className="file-tree-button-group"
+      style={{
+        width: "100%",
+      }}
+    >
+      <ButtonGroup 
+        minimal
+        fill
+      >
+        <Tooltip2 content="New File">
+          <Button
+            onClick={onNewFile}
+            intent="primary"
+            icon="plus"
+          />
+        </Tooltip2>
+        <Tooltip2 content="New Folder">
+          <Button
+            onClick={onNewFolder}
+            icon="folder-new"
+          />
+        </Tooltip2>
+        <Tooltip2 content="Delete">
+          <Button
+            onClick={onDelete}
+            icon="trash"
+          />
+        </Tooltip2>
+        <Tooltip2 content="Refresh Explorer">
+          <Button
+            onClick={onRefresh}
+            icon="refresh"
+          />
+        </Tooltip2>
+        <Tooltip2 content="Change Working Directory">
+          <Button
+            onClick={onChangeDirectory}
+            icon="exchange"
+          />
+        </Tooltip2>
+      </ButtonGroup>
+    </div>
+  );
+}
+
+
+export interface IFileTreeProps {
+  contents: (File | Folder)[];
+}
+
+// TODO – Lazy render FS tree?
+// TODO – Add a search bar?
 /**
  * FileTree displays a file system tree in the side panel.
  */
-function FileTree({ contents }: { contents: (File | Folder)[] }) {
+function FileTree({ contents }: IFileTreeProps) {
   const [selected, setSelected] = useState("");
   const [_expanded, _setExpanded] = useState<string[]>([]);
 
@@ -199,6 +273,9 @@ export default function AppSidebar({ contents }: IAppSidebarProps) {
         height: "100%",
       }}
     >
+      <FileTreeButtons />
+      <Divider />
+
       <Scrollbars
         style={{
           width: "100%",
@@ -206,7 +283,6 @@ export default function AppSidebar({ contents }: IAppSidebarProps) {
         }}
       >
         <div>
-          <p>Sidebar...</p>
           <FileTree 
             contents={contents || demoContents} 
           />

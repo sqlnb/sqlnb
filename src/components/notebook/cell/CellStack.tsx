@@ -7,6 +7,7 @@ import Cell from './Cell';
  * ICellStackProps - The props for the CellStack component.
  */
 export interface ICellStackProps {
+  onClick?: () => void;
   cells: {
     execIndex?: number;
     code: string;
@@ -21,13 +22,14 @@ export interface ICellStackProps {
 /**
  * CellStack stores a list of cells in a notebook body.
  */
-export default function CellStack({ cells }: ICellStackProps) {
+export default function CellStack({ onClick, cells }: ICellStackProps) {
   return (
     <div 
       className="cell-stack"
       style={{
         margin: "20px",
       }}
+      onClick={onClick}
     >
       {cells.map((cell, i) => (
         <Cell
