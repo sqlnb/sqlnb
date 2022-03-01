@@ -12,10 +12,11 @@ import Split from 'react-split';
 import AppNav from './components/AppNav';
 import AppSidebar from './components/sidebar/AppSidebar';
 import AppMain from './components/AppMain';
-import SidebarTabs from './components/sidebar/SidebarTabs';
+import SidebarTabs, { SidebarTabType } from './components/sidebar/SidebarTabs';
 
 
 export default function App() {
+  const [selectedTab, setSelectedTab] = useState(SidebarTabType.FILES);
   return (
     <HotkeysProvider>
       <div 
@@ -41,7 +42,10 @@ export default function App() {
               height: "100%",
             }}
           >
-            <SidebarTabs />
+            <SidebarTabs 
+              selectedTab={selectedTab}
+              onSelectTab={setSelectedTab}
+            />
           </div>
           <div
             style={{
@@ -53,6 +57,7 @@ export default function App() {
           >
             <Split
               sizes={[25, 75]}
+              minSize={[150, 500]}
               className="split"
               style={{
                 width: "100%",
@@ -60,9 +65,9 @@ export default function App() {
                 margin: 0,
               }}
             >
-            <AppSidebar />
-            <AppMain />
-          </Split>
+              <AppSidebar />
+              <AppMain />
+            </Split>
           </div>
         </div>
       </div>

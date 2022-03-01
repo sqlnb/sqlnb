@@ -44,7 +44,7 @@ export default function Notebook({}: INotebookProps) {
   const [editorHasFocus, setEditorHasFocus] = useState<boolean>(false);
 
   
-  const [connStatus, setConnStatus] = useState<DBConnStatus>(DBConnStatus.CONNECTED);
+  const [connStatus, setConnStatus] = useState<DBConnStatus | undefined>(DBConnStatus.NOT_CONNECTED);
 
 
   const getSelectedCell = () => selected !== null ? clone(nbData.cells[selected]) : null;

@@ -22,20 +22,20 @@ export enum DBConnStatus {
   INTERRUPTED = "Interrupted",
 }
 
-function getIntentFromStatus(s: DBConnStatus): (Intent | undefined) {
+function getColorFromStatus(s: DBConnStatus): (string | undefined) {
   switch (s) {
     case DBConnStatus.NOT_CONNECTED:
-      return undefined;
+      return "lightgray";
     case DBConnStatus.CONNECTED:
-      return "primary";
+      return "lightgreen";
     case DBConnStatus.RUNNING:
-      return "success";
+      return "orange";
     case DBConnStatus.ERROR:
-      return "danger";
+      return "red";
     case DBConnStatus.INTERRUPTED:
-      return "warning";
+      return "darkgray";
     default:
-      return undefined;
+      return "lightgray";
   }
 }
 
@@ -242,7 +242,7 @@ export default function NotebookNav({
                     margin: "5px auto",
                   }}
                 >
-                  <Icon icon={navc.icon} intent={getIntentFromStatus(navc.status)} />
+                  <Icon icon={navc.icon} color={getColorFromStatus(navc.status)} />
                   <span
                     style={{
                       marginLeft: "6px",
